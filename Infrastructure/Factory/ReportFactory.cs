@@ -34,10 +34,10 @@ namespace Infrastructure.Factory
 
         private void ValidateTimeElapsed(long timeElapsed)
         {
-            if (timeElapsed < 0)
-            {
-                throw new PropertyException("Tiempo de ejecución no puede ser menor a 0");
-            }
+            //if (timeElapsed < 0)
+            //{
+            //    throw new PropertyException("Tiempo de ejecución no puede ser menor a 0");
+            //}
         }
 
         private void ValidateNumberElements(int numberElements)
@@ -50,7 +50,7 @@ namespace Infrastructure.Factory
 
         private void ValidateMethod(string method)
         {
-            string[] methods = { "Burbuja", "Inserion", "Seleccion", "Merge", "QuickSort" };
+            string[] methods = { "Burble", "Insertion", "Selection", "Merge", "QuickSort" };
 
             if (!methods.Contains(method))
             {

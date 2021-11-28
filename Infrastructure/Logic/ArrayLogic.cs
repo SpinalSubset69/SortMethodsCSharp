@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Infrastructure.Logic
     public class ArrayLogic
     {
         private int[] array;
+        private int[] tempArray;
         private IGenericRepository<Report> _repo;
         private IReportFactory _reportFactory;
 
@@ -26,27 +28,49 @@ namespace Infrastructure.Logic
             _reportFactory = new ReportFactory();
         }
 
-        public async Task<int[]> GenerateArrayAndFillRandomNumbers(int numberElements)
-        {
-            array = new int[numberElements];
+        public async Task<int[]> GenerateArrayAndFillRandomNumbers()
+        {            
             return await this.array.GenerateAndFillArrayWithRandomNumbers();            
         }
 
-        public async Task<int[]> SortArrayBasedOnMethod(string method)
+        public async Task SortArrayBasedOnMethod(string method)
         {
-            var init = DateTime.Now.Millisecond;
+            var timer = new Stopwatch();
+            timer.Start();
             switch (method)
             {
-                case "Burbuja":
-                    await array.BurbleSort();
+                case "Burble":
+                    array = await array.BurbleSort();
+                    break;
+                case "QuickSort":
+                    await array.QuickSort(0, array.Length - 1);
+                    break;
+                case "Merge":
+                    array = await array.mergeSort();
+                    break;
+                case "Selection":
+                    array = await array.Selection();
+                    break;
+                case "Insertion":
+                    array = await array.InsertionSort();
                     break;
             }
-            var end = DateTime.Now.Millisecond;
-            long timeElapsed = end - init;
-            AddReport(method, timeElapsed);
-            array = null;
-            return array;
+            timer.Stop();
+
+            TimeSpan ts = timer.Elapsed;            
+            AddReport(method, (long)ts.TotalSeconds);
+            tempArray = array;
+            array = null;            
         }        
+
+        public void InitialieArray(int nElements) {
+            array = new int[nElements];
+            tempArray = new int[nElements];
+        }
+        public int[] GetArray()
+        {
+            return tempArray;
+        }
 
         public void AddReport(string method, long timeElapsed)
         {
